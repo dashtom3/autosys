@@ -4,19 +4,32 @@
     <div class="header-medium">
       <label v-for="headerItem in headerMedium.data"><router-link v-bind:to=headerItem[1]>{{headerItem[0]}}</router-link></label>
     </div>
-    <label class="header-right">登录</label>
+    <label class="header-right" v-if="token == null">
+      <router-link v-bind:to="'/login'">登录</router-link>
+    </label>
+    <label class="header-right" v-if="token != null">
+      欢迎,<router-link v-bind:to="'/user'">{{this.user.userName}}&nbsp;{{this.user.name}}</router-link>&nbsp;|&nbsp;
+      <router-link v-bind:to="'/login'">退出</router-link>
+    </label>
   </div>
 </template>
 <script>
+import CONFIG from 'global/config'
 export default {
   name: 'header',
+  created: function () {
+    this.token = CONFIG.getToken()
+    this.user = CONFIG.getUser()
+  },
   data () {
     return {
       headerMedium: {selected: 0,
         data: [
-          ['生涯规划', 'student'], ['我的项目', 'project'], ['资料下载', 'file']
+          ['生涯规划', '/student'], ['我的项目', '/project'], ['资料下载', '/file'], ['个人资料', '/user']
         ]
-      }
+      },
+      token: null,
+      user: null
     }
   }
 }
